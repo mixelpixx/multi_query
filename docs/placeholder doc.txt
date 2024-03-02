@@ -1,0 +1,1 @@
+This is a placeholder for the documentation of the project. The documentation should include information on how to set up and run the code, descriptions of what each script does, and any dependencies that need to be installed.

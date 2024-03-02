@@ -1,14 +1,14 @@
+import os
+import shutil
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
 from IPython.display import Markdown, display
 from llama_index.embeddings.openai import OpenAIEmbedding
 import chromadb
-import os
 import getpass
-import shutil
 
-os.environ["OPENAI_API_KEY"] = getpass.getpass("OpenAI API Key:")
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") or getpass.getpass("OpenAI API Key:")
 import openai
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -22,6 +22,9 @@ embed_model = OpenAIEmbedding(
 )
 
 documents = SimpleDirectoryReader("./data/paul_graham/").load_data()
+
+if not documents:
+    print("No documents found in the 'docs' folder. The database is empty.")
 
 vector_store = ChromaVectorStore(chroma_collection=chroma_collection)
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
