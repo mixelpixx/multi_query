@@ -1,21 +1,35 @@
 import gradio as gr
-from backend.rag_function import check_database_exists, rebuild_database, query_engine
-from llms.openai_chat import openai_chat
-from llms.gemini_chat import gemini_chat
+import openai
+import google_generativeai as gg
+import chromadb
+import llama_index
 
-def chatbot_interface(user_message, llm_choice):
-    db_response = query_engine(user_message)
-    combined_input = user_message + " " + db_response
-    if llm_choice == 'OpenAI':
-        return openai_chat(combined_input)
-    elif llm_choice == 'Gemini':
-        return gemini_chat(combined_input)
+# Define the chatbot function
+def chatbot(input_text):
+    # Use the OpenAI API to generate a response
+    response = openai.generate_response(input_text)
+    
+    # Use the Google Generative AI API to generate a more detailed response
+    detailed_response = gg.generate_detailed_response(input_text)
+    
+    # Use the ChromaDB API to get the color scheme for the response
+    color_scheme = chromadb.get_color_scheme(response)
+    
+    # Use the Llama Index API to get the llama index for the response
+    llama_index = llama_index.get_llama_index(response)
+    
+    # Combine the response, detailed response, color scheme, and llama index into a single output
+    output = {
+        "response": response,
+        "detailed_response": detailed_response,
+        "color_scheme": color_scheme,
+        "llama_index": llama_index
+    }
+    
+    return output
 
-if check_database_exists():
-    rebuild_choice = gr.Interface.load()
-    if rebuild_choice == 'Rebuild':
-        rebuild_database()
+# Create a Gradio interface for the chatbot
+iface = gr.Interface(fn=chatbot, inputs="text", outputs="text")
 
-llm_choice = gr.Radio(['OpenAI', 'Gemini'], label='Choose your LLM')
-iface = gr.Interface(chatbot_interface, ['textbox', llm_choice], 'textbox')
+# Launch the Gradio interface
 iface.launch()
