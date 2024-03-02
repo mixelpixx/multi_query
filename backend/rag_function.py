@@ -59,6 +59,10 @@ def rebuild_database():
         documents, storage_context=storage_context, embed_model=embed_model
     )
 
-query_engine = index.as_query_engine()
-response = query_engine.query("What did the author do growing up?")
+def query_engine(user_input):
+    engine = index.as_query_engine()
+    response = engine.query(user_input)
+    return response
+
+response = query_engine("What did the author do growing up?")
 display(Markdown(f"<b>{response}</b>"))
