@@ -3,7 +3,7 @@ import openai
 import google.generativeai as genai
 import chromadb
 import llama_index
-from backend.rag_function import query_engine
+from ..backend.rag_function import query_engine
 from llms.openai_chat import openai_chat
 from llms.gemini_chat import gemini_chat
 
