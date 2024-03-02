@@ -1,6 +1,6 @@
 import gradio as gr
 import openai
-import google_generativeai as gg
+import google.generativeai as genai
 import chromadb
 import llama_index
 
@@ -10,7 +10,7 @@ def chatbot(input_text):
     response = openai.generate_response(input_text)
     
     # Use the Google Generative AI API to generate a more detailed response
-    detailed_response = gg.generate_detailed_response(input_text)
+    detailed_response = genai.generate_detailed_response(input_text)
     
     # Use the ChromaDB API to get the color scheme for the response
     color_scheme = chromadb.get_color_scheme(response)
