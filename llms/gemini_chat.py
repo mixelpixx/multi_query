@@ -36,7 +36,7 @@ safety_settings = [
   },
 ]
 
-def gemini_chat(user_message):
+def gemini_chat(user_message, db_results):
     model = genai.GenerativeModel(model_name="gemini-1.0-pro-001",
                                 generation_config=generation_config,
                                 safety_settings=safety_settings)
@@ -47,11 +47,15 @@ def gemini_chat(user_message):
             "parts": [user_message]
         },
         {
+            "role": "db_results",
+            "parts": [db_results]
+        },
+        {
             "role": "model",
             "parts": ["I am well, thank you for asking. I am a virtual assistant designed to help you with a variety of tasks, including answering your questions, providing information, and completing tasks. How can I help you today?"]
         },
     ])
 
-convo = gemini_chat("Hi, how are you today?")
+convo = gemini_chat("Hi, how are you today?", "YOUR_DB_RESULTS")
 convo.send_message("YOUR_USER_INPUT")
 print(convo.last.text)

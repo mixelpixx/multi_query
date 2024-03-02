@@ -3,11 +3,20 @@ import openai
 import google.generativeai as genai
 import chromadb
 import llama_index
+from backend.rag_function import query_engine
+from llms.openai_chat import openai_chat
+from llms.gemini_chat import gemini_chat
 
 # Define the chatbot function
-def chatbot(input_text):
-    # Use the OpenAI API to generate a response
-    response = openai.generate_response(input_text)
+def chatbot(input_text, llm):
+    # Query the database with the user's input
+    db_results = query_engine(input_text)
+    
+    # Depending on the selected LLM, use the appropriate function to generate a response
+    if llm == 'OpenAI':
+        response = openai_chat(input_text, db_results)
+    elif llm == 'Gemini':
+        response = gemini_chat(input_text, db_results)
     
     # Use the Google Generative AI API to generate a more detailed response
     detailed_response = genai.generate_detailed_response(input_text)
@@ -29,7 +38,7 @@ def chatbot(input_text):
     return output
 
 # Create a Gradio interface for the chatbot
-iface = gr.Interface(fn=chatbot, inputs="text", outputs="text")
+iface = gr.Interface(fn=chatbot, inputs=["text", gr.inputs.Dropdown(choices=['OpenAI', 'Gemini'])], outputs="text")
 
 # Launch the Gradio interface
 iface.launch()
