@@ -79,7 +79,3 @@ def query_engine(user_input):
     engine = index.as_query_engine()
     response = engine.query(user_input)
     return response
-
-# Query the engine with a sample question and display the response in Markdown format.
-response = query_engine("What did the author do growing up?")
-display(Markdown(f"<b>{response}</b>"))
